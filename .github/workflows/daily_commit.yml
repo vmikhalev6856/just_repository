@@ -1,0 +1,24 @@
+name: daily commit
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # every day at 09:00 MSK (UTC+3 = 6:00 UTC)
+
+  workflow_dispatch:
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - name: make daily change
+        run: echo "daily update at $(date -u)" >> .daily-activity.log
+
+      - name: commit and push changes
+        run: |
+          git add .daily_activity.log
+          git commit -m "$(date -u) daily activity log"
+          git push
