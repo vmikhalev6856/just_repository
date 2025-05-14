@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: make daily change
-        run: echo "daily update at $(date -u)" >> .daily-activity.log
+        run: echo "daily update at $(date -u)" >> .daily_activity.log
 
       - name: commit and push changes
         run: |
