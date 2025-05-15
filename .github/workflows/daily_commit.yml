@@ -17,10 +17,19 @@ jobs:
       - name: make daily change
         run: echo "daily update at $(date -u)" >> .daily_activity.log
 
-      - name: commit and push changes
+      - name: setup ssh
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          mkdir -p ~/.ssh
+          echo "${{ secrets.GH_ACTIONS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+      - name: commit and push
+        env:
+          GIT_SSH_COMMAND: "ssh -i ~/.ssh/id_ed25519"
+        run: |
+          git config user.name ${{ secrets.GH_USER_NAME }}
+          git config user.email ${{ secrets.GH_USER_EMAIL }}
           git add .daily_activity.log
           git commit -m "$(date -u) daily activity log"
-          git push
+          git push origin main
